@@ -16,3 +16,7 @@ title: Computação Deliveries
 - Em relação ao sistema de pagamento, o cliente precisa pagar e receber a confirmação do pagamento para poder receber a encomenda, ou seja, a entrega só pode ter o status de entregue, se o pagamento estiver confirmado. Caso o contrário, o status da entrega deve ser “Aguardando”.
 
 **Cliente: Tibério**
+
+
+##Importante:
+-**Para executar no linux:** Digite => java -jar org.alloytools.alloy.dist.jar
