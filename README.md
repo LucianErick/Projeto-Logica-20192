@@ -5,9 +5,7 @@ title: Computação Deliveries
 **Luciano Erick Sousa Figueiredo Filho** | **luciano.erick.filho@ccc.ufcg.edu.br**
 --- | ---
 **Ana Carolina Chaves de Vasconcelos** | **ana.vasconcelos@ccc.ufcg.edu.br**
---- | ---
 **Artur Brito Souza** | **Email ccc de Artur**
---- | ---
 **Leonardo Veiga de Medeiros Porfírio** | **leonardo.porfirio@ccc.ufcg.edu.br**
 
 ## Especificação:
