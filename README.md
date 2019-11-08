@@ -4,8 +4,8 @@ title: Computação Deliveries
 ### Integrantes:
 **Luciano Erick Sousa Figueiredo Filho** | **luciano.erick.filho@ccc.ufcg.edu.br**
 --- | ---
-**Ana Carolina Chaves de Vasconcelos** | **ana.vasconcelos@ccc.ufcg.edu.br**
-**Artur Brito Souza** | **artur.souza@ccc.ufcg.edu.br**
+**Ana Carolina Chaves de Vasconcelos** | **ana.vasconcelos@ccc.ufcg.edu.br** | [link](https://github.com/anacarolinacv)
+**Artur Brito Souza** | **artur.souza@ccc.ufcg.edu.br** | [link](https://github.com/arturbs)
 **Leonardo Veiga de Medeiros Porfírio** | **leonardo.porfirio@ccc.ufcg.edu.br**
 
 ## Especificação:
@@ -16,3 +16,7 @@ title: Computação Deliveries
 - Em relação ao sistema de pagamento, o cliente precisa pagar e receber a confirmação do pagamento para poder receber a encomenda, ou seja, a entrega só pode ter o status de entregue, se o pagamento estiver confirmado. Caso o contrário, o status da entrega deve ser “Aguardando”.
 
 **Cliente: Tibério**
+
+
+## Importante:
+-**Para executar no linux:** Digite => java -jar org.alloytools.alloy.dist.jar
