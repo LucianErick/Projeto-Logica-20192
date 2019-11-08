@@ -4,8 +4,8 @@ title: Computação Deliveries
 ### Integrantes:
 **Luciano Erick Sousa Figueiredo Filho** | **luciano.erick.filho@ccc.ufcg.edu.br**
 --- | ---
-**Ana Carolina Chaves de Vasconcelos** | **ana.vasconcelos@ccc.ufcg.edu.br**
-**Artur Brito Souza** | **artur.souza@ccc.ufcg.edu.br**
+**Ana Carolina Chaves de Vasconcelos** | **ana.vasconcelos@ccc.ufcg.edu.br** | [link](https://github.com/anacarolinacv)
+**Artur Brito Souza** | **artur.souza@ccc.ufcg.edu.br** | [link](https://github.com/arturbs)
 **Leonardo Veiga de Medeiros Porfírio** | **leonardo.porfirio@ccc.ufcg.edu.br**
 
 ## Especificação:
