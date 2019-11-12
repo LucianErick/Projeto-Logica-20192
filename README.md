@@ -1,14 +1,14 @@
 ---
-title: Computação Deliveries
+                              title: Computação Deliveries
 ---
 ### Integrantes:
 
 **Ana Carolina Chaves de Vasconcelos** | **ana.vasconcelos@ccc.ufcg.edu.br**
 --- | ---
 **Artur Brito Souza** | **artur.souza@ccc.ufcg.edu.br**
+**Damião Robson Domiciano** | **damiao.domiciano@ccc.ufcg.edu.br**
 **Leonardo Veiga de Medeiros Porfírio** | **leonardo.porfirio@ccc.ufcg.edu.br**
 **Luciano Erick Sousa Figueiredo Filho** | **luciano.erick.filho@ccc.ufcg.edu.br**
-**Damião Robson Domiciano** | **damiao.domiciano@ccc.ufcg.edu.br**
 
 ## Especificação:
 **Descrição:** A empresa Computação Deliveries está querendo desenvolver um novo sistema para administrar as suas entregas. A empresa trabalha com três tipos de encomendas: pequena, média e grande; e cada tipo tem suas restrições: encomendas do tipo pequena e média podem ser entregues por qualquer tipo de entregador, entretanto as encomendas grandes só podem ser entregues por entregadores especiais.
