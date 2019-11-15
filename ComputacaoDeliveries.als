@@ -1,44 +1,50 @@
 module ComputacaoDeliveries
 
---Assinaturas
-sig Encomenda{
+-- ENCOMENDAS
+
+abstract sig Encomenda{
 	cliente: one Cliente
 }
 
-sig EncomendaPequena, EncomendaMedia extends Encomenda{}
-sig EncomendaGrande extends Encomenda {}
- 
-sig Entregador {
-	encomendas: set Encomenda
-}
-sig EntregadorEspecial extends Entregador{
+sig EncomendaPequena, EncomendaMedia, EncomendaGrande extends Encomenda{
 }
 
-sig Cliente {
-	encomendas: set Encomenda
+-- CLIENTE
+abstract sig Cliente {
+	pedidos: some Encomenda
 }
-sig ClientePrime extends Cliente{}
---Fim das assinaturas
 
---Checando o numero de encomendas por cliente
-fact {
-	all c:Cliente | #encomendasDoCliente[c] < 4
-	all p:ClientePrime | #encomendasDoClientePrime[p] < 7
-	all e:Encomenda | #clienteDaEncomenda[e] = 1
+sig ClienteNormal, ClientePrime extends Cliente{}
 
+fact ClienteNormalTemAte3Encomendas{
+	all c:ClienteNormal | #encomendasDoCliente[c] < 4
 }
---
+fact ClientePrimeTemAte6Encomendas {
+	all p:ClientePrime | #encomendasDoCliente[p] < 7
+}
+
+fact EncomendaSoPodeSerDeUmCliente{
+	all disj cli1,cli2:Cliente | 
+	!(some enc:Encomenda | 
+	(enc in encomendasDoCliente[cli1] &&
+	 enc in encomendasDoCliente[cli2]))   
+}
+
+fact oClienteDaEncomendaEhOQueTemAEncomenda {
+	all cli:Cliente, enc:Encomenda | (enc in cli.pedidos) => (enc.cliente = cli)
+}
+
+fact todaRelacaoComClienteTemPedido {
+	all cli:Cliente,enc:Encomenda | (cli in enc.cliente) => (enc in cli.pedidos)
+}
+
+
 fun encomendasDoCliente[c:Cliente]: set Encomenda {
-	c.encomendas
+	c.pedidos
 }
 
-fun encomendasDoClientePrime(p:ClientePrime): set Encomenda {
-	p.encomendas
+pred ehClientePrime {
+	
 }
-
-fun clienteDaEncomenda[e:Encomenda]: one Cliente {
-	e.cliente
-}
-
 pred show[]{}
-run show for 6
+run show for 10
