@@ -3,7 +3,8 @@ module ComputacaoDeliveries
 -- ENCOMENDAS
 
 abstract sig Encomenda{
-	cliente: one Cliente
+	cliente: one Cliente,
+	entregador: one Entregador
 }
 
 sig EncomendaPequena, EncomendaMedia, EncomendaGrande extends Encomenda{
@@ -16,18 +17,13 @@ abstract sig Cliente {
 
 sig ClienteNormal, ClientePrime extends Cliente{}
 
+-- FATOS
+
 fact ClienteNormalTemAte3Encomendas{
 	all c:ClienteNormal | #encomendasDoCliente[c] < 4
 }
 fact ClientePrimeTemAte6Encomendas {
 	all p:ClientePrime | #encomendasDoCliente[p] < 7
-}
-
-fact EncomendaSoPodeSerDeUmCliente{
-	all disj cli1,cli2:Cliente | 
-	!(some enc:Encomenda | 
-	(enc in encomendasDoCliente[cli1] &&
-	 enc in encomendasDoCliente[cli2]))   
 }
 
 fact oClienteDaEncomendaEhOQueTemAEncomenda {
@@ -38,13 +34,36 @@ fact todaRelacaoComClienteTemPedido {
 	all cli:Cliente,enc:Encomenda | (cli in enc.cliente) => (enc in cli.pedidos)
 }
 
+-- FUNÇÕES
 
-fun encomendasDoCliente[c:Cliente]: set Encomenda {
+fun encomendasDoCliente[c:Cliente]: some Encomenda {
 	c.pedidos
 }
 
-pred ehClientePrime {
-	
+-- ENTREGADOR
+
+abstract sig Entregador {
+	entregas: some Encomenda
 }
+sig EntregadorNormal, EntregadorEspecial extends Entregador{}
+
+-- FATOS
+fact doisEntregadoresNaoTemAMesmaEncomenda{
+	all disj ent1,ent2:Entregador | 
+	!(some encomenda: Encomenda | 
+	encomenda in entregasDoEntregador[ent1] && 
+	encomenda in entregasDoEntregador[ent2])
+}
+
+fact entregadorNormalNaoEntregaEncomendaGrande {
+	all g:EncomendaGrande,e:EntregadorNormal | !(g in entregasDoEntregador[e]) && g.entregador != e
+}
+
+-- FUNÇÕES
+
+fun entregasDoEntregador[ent:Entregador]: some Encomenda{
+	ent.entregas
+}
+
 pred show[]{}
 run show for 10
