@@ -3,7 +3,7 @@
 ---
 ### Integrantes:
 
-**Ana Carolina Chaves de Vasconcelos** | **ana.vasconcelos@ccc.ufcg.edu.br**
+**Ana Carolina Chaves de Vasconcelos** |**ana.vasconcelos@ccc.ufcg.edu.br**
 --- | ---
 **Artur Brito Souza** | **artur.souza@ccc.ufcg.edu.br**
 **Damião Robson Domiciano** | **damiao.domiciano@ccc.ufcg.edu.br**
