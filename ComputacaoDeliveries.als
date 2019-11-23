@@ -1,7 +1,6 @@
 module ComputacaoDeliveries
 
 -- ENCOMENDAS
-
 abstract sig Encomenda{
 	cliente: one Cliente,
 	entregador: one Entregador
@@ -17,29 +16,6 @@ abstract sig Cliente {
 
 sig ClienteNormal, ClientePrime extends Cliente{}
 
--- FATOS
-
-fact ClienteNormalTemAte3Encomendas{
-	all c:ClienteNormal | #encomendasDoCliente[c] < 4
-}
-fact ClientePrimeTemAte6Encomendas {
-	all p:ClientePrime | #encomendasDoCliente[p] < 7
-}
-
-fact oClienteDaEncomendaEhOQueTemAEncomenda {
-	all cli:Cliente, enc:Encomenda | (enc in cli.pedidos) => (enc.cliente = cli)
-}
-
-fact todaRelacaoComClienteTemPedido {
-	all cli:Cliente,enc:Encomenda | (cli in enc.cliente) => (enc in cli.pedidos)
-}
-
--- FUNÇÕES
-
-fun encomendasDoCliente[c:Cliente]: some Encomenda {
-	c.pedidos
-}
-
 -- ENTREGADOR
 
 abstract sig Entregador {
@@ -47,22 +23,57 @@ abstract sig Entregador {
 }
 sig EntregadorNormal, EntregadorEspecial extends Entregador{}
 
+
 -- FATOS
+
+fact clienteNormalTemAte3Encomendas {
+	all cliente:ClienteNormal | #encomendasDoCliente[cliente] < 4
+}
+fact clientePrimeTemAte6Encomendas {
+	all pedido:ClientePrime | #encomendasDoCliente[pedido] < 7
+}
+
+fact relacaoEntreClienteEEncomendaEhDupla{
+	all cliente:Cliente, pedido:Encomenda | 
+	(pedido in encomendasDoCliente[cliente]) => (oCliente[pedido] = cliente)
+}
+
+fact todaRelacaoComClienteTemPedido{
+	all cliente:Cliente, pedido:Encomenda | 
+	(cliente in oCliente[pedido]) => (pedido in encomendasDoCliente[cliente])
+}
+
 fact doisEntregadoresNaoTemAMesmaEncomenda{
 	all disj ent1,ent2:Entregador | 
-	!(some encomenda: Encomenda | 
-	encomenda in entregasDoEntregador[ent1] && 
-	encomenda in entregasDoEntregador[ent2])
+	!(some pedido: Encomenda | 
+	pedido in entregasDoEntregador[ent1] && 
+	pedido in entregasDoEntregador[ent2])
+}
+
+fact relacaoEntreEncomendaEEntregadorEhDupla {
+	all pedido:Encomenda, entregador:Entregador |
+	 (oEntregador[pedido] = entregador) => (pedido in entregasDoEntregador[entregador])
 }
 
 fact entregadorNormalNaoEntregaEncomendaGrande {
-	all g:EncomendaGrande,e:EntregadorNormal | !(g in entregasDoEntregador[e]) && g.entregador != e
+	all pedido:EncomendaGrande, entregador:EntregadorNormal |
+ 	!(pedido in entregasDoEntregador[entregador]) && oEntregador[pedido] != entregador
 }
 
 -- FUNÇÕES
 
+fun encomendasDoCliente[c:Cliente]: some Encomenda {
+	c.pedidos
+}
 fun entregasDoEntregador[ent:Entregador]: some Encomenda{
 	ent.entregas
+}
+fun oCliente[pedido:Encomenda] : one Cliente {
+	pedido.cliente
+}
+
+fun oEntregador[pedido:Encomenda] : one Entregador {
+	pedido.entregador
 }
 
 pred show[]{}
