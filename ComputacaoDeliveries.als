@@ -2,8 +2,10 @@ module ComputacaoDeliveries
 
 -- ENCOMENDAS
 abstract sig Encomenda{
-	cliente: one Cliente,
-	entregador: one Entregador
+
+	statusEntrega: one StatusEntrega,
+	statusPagamento: one StatusPagamento
+
 }
 
 sig EncomendaPequena, EncomendaMedia, EncomendaGrande extends Encomenda{
@@ -33,14 +35,15 @@ fact clientePrimeTemAte6Encomendas {
 	all pedido:ClientePrime | #encomendasDoCliente[pedido] < 7
 }
 
-fact relacaoEntreClienteEEncomendaEhDupla{
-	all cliente:Cliente, pedido:Encomenda | 
-	(pedido in encomendasDoCliente[cliente]) => (oCliente[pedido] = cliente)
+fact todaEncomendaTemCliente {
+	all encomenda:Encomenda | one cliente:Cliente |
+	 encomenda in encomendasDoCliente[cliente]
 }
 
-fact todaRelacaoComClienteTemPedido{
-	all cliente:Cliente, pedido:Encomenda | 
-	(cliente in oCliente[pedido]) => (pedido in encomendasDoCliente[cliente])
+fact encomendaSoTemUmCliente{
+	all disj cli1, cli2: Cliente |
+	!(some encomenda:Encomenda 
+	| encomenda in encomendasDoCliente[cli1] && encomenda in encomendasDoCliente[cli2])
 }
 
 fact doisEntregadoresNaoTemAMesmaEncomenda{
@@ -50,14 +53,22 @@ fact doisEntregadoresNaoTemAMesmaEncomenda{
 	pedido in entregasDoEntregador[ent2])
 }
 
-fact relacaoEntreEncomendaEEntregadorEhDupla {
-	all pedido:Encomenda, entregador:Entregador |
-	 (oEntregador[pedido] = entregador) => (pedido in entregasDoEntregador[entregador])
-}
-
 fact entregadorNormalNaoEntregaEncomendaGrande {
 	all pedido:EncomendaGrande, entregador:EntregadorNormal |
- 	!(pedido in entregasDoEntregador[entregador]) && oEntregador[pedido] != entregador
+ 	!(pedido in entregasDoEntregador[entregador])
+}
+
+fact todaEncomendaTemEntregador {
+
+	all encomenda:Encomenda | one entregador:Entregador | encomenda in entregasDoEntregador[entregador]
+}
+
+fact entregueAoPagar {
+	all encomenda:Encomenda | (encomenda.statusPagamento in Confirmado) <=> (encomenda.statusEntrega in Entregue)
+}
+
+fact clientePagando {
+	all cliente:Cliente, encomenda:Encomenda | (encomenda.statusPagamento in AguardandoPagamento) => pagamentoDoCliente[encomenda]
 }
 
 -- FUNÇÕES
@@ -68,13 +79,26 @@ fun encomendasDoCliente[c:Cliente]: some Encomenda {
 fun entregasDoEntregador[ent:Entregador]: some Encomenda{
 	ent.entregas
 }
-fun oCliente[pedido:Encomenda] : one Cliente {
-	pedido.cliente
+
+fun pagamentoDoCliente[encomenda:Encomenda] {
+	encomenda.statusPagamento in Confirmado
 }
 
-fun oEntregador[pedido:Encomenda] : one Entregador {
-	pedido.entregador
-}
+
+
+-- PAGAMENTO
+
+abstract sig StatusPagamento {}
+one sig Confirmado extends StatusPagamento {}
+one sig AguardandoPagamento extends StatusPagamento {}
+
+
+-- ENTREGA
+
+abstract sig StatusEntrega {}
+one sig Entregue extends StatusEntrega {}
+one sig Aguardando extends StatusEntrega {}
+
 
 pred show[]{}
 run show for 10
