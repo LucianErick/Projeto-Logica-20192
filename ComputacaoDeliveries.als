@@ -1,36 +1,42 @@
 module ComputacaoDeliveries
 
--- ENCOMENDAS
+------------------------------------------- ENCOMENDAS -------------------------------------------*
 abstract sig Encomenda{
-
 	statusEntrega: one StatusEntrega,
 	statusPagamento: one StatusPagamento
-
 }
 
 sig EncomendaPequena, EncomendaMedia, EncomendaGrande extends Encomenda{
 }
 
--- CLIENTE
+------------------------------------------- CLIENTE ---------------------------------------------------*
 abstract sig Cliente {
 	pedidos: some Encomenda
 }
 
 sig ClienteNormal, ClientePrime extends Cliente{}
 
--- ENTREGADOR
-
+------------------------------------------- ENTREGADOR ---------------------------------------------*
 abstract sig Entregador {
 	entregas: some Encomenda
 }
 sig EntregadorNormal, EntregadorEspecial extends Entregador{}
 
+------------------------------------------- PAGAMENTO ---------------------------------------------*
+abstract sig StatusPagamento {}
+one sig PagamentoConfirmado extends StatusPagamento {}
+one sig AguardandoPagamento extends StatusPagamento {}
 
--- FATOS
+----------------------------------------- ENTREGA ----------------------------------------------------*
+abstract sig StatusEntrega {}
+one sig Entregue extends StatusEntrega {}
+one sig Aguardando extends StatusEntrega {}
 
+----------------------------------------- FATOS --------------------------------------------------------*
 fact clienteNormalTemAte3Encomendas {
 	all cliente:ClienteNormal | #encomendasDoCliente[cliente] < 4
 }
+
 fact clientePrimeTemAte6Encomendas {
 	all pedido:ClientePrime | #encomendasDoCliente[pedido] < 7
 }
@@ -59,46 +65,50 @@ fact entregadorNormalNaoEntregaEncomendaGrande {
 }
 
 fact todaEncomendaTemEntregador {
-
 	all encomenda:Encomenda | one entregador:Entregador | encomenda in entregasDoEntregador[entregador]
 }
 
-fact entregueAoPagar {
-	all encomenda:Encomenda | (encomenda.statusPagamento in Confirmado) <=> (encomenda.statusEntrega in Entregue)
+fact encomendaSoEhEntregueAoPagar {
+	all encomenda:Encomenda | clientePagou[encomenda] <=> (encomenda.statusEntrega in Entregue)
 }
 
-fact clientePagando {
-	all cliente:Cliente, encomenda:Encomenda | (encomenda.statusPagamento in AguardandoPagamento) => pagamentoDoCliente[encomenda]
-}
-
--- FUNÇÕES
-
+----------------------------------------- FUNÇÕES --------------------------------------------------*
 fun encomendasDoCliente[c:Cliente]: some Encomenda {
 	c.pedidos
 }
+
 fun entregasDoEntregador[ent:Entregador]: some Encomenda{
 	ent.entregas
 }
 
-fun pagamentoDoCliente[encomenda:Encomenda] {
-	encomenda.statusPagamento in Confirmado
+----------------------------------------- PREDICADOS ----------------------------------------------*
+
+pred clientePagou[encomenda:Encomenda] {
+	encomenda.statusPagamento in PagamentoConfirmado
 }
 
+----------------------------------------- ASSERTS ---------------------------------------------------*
 
+assert assertNumeroDeEncomendasClienteNormal {
+	all cliente:ClienteNormal | #encomendasDoCliente[cliente] < 4
+}
 
--- PAGAMENTO
+assert assertNumeroDeEncomendasClientePrime {
+	all cliente:ClientePrime | #encomendasDoCliente[cliente] < 7
+}
 
-abstract sig StatusPagamento {}
-one sig Confirmado extends StatusPagamento {}
-one sig AguardandoPagamento extends StatusPagamento {}
+assert assertTodaEncomendaTemCliente {
+	all encomenda:Encomenda | one cliente:Cliente |
+	 encomenda in encomendasDoCliente[cliente]
+}
 
+-------------------------------------- CHECK'S -------------------------------------------------------*
 
--- ENTREGA
+check assertNumeroDeEncomendasClienteNormal for 10
+check assertNumeroDeEncomendasClientePrime for 10
+check assertTodaEncomendaTemCliente for 10  
 
-abstract sig StatusEntrega {}
-one sig Entregue extends StatusEntrega {}
-one sig Aguardando extends StatusEntrega {}
-
+-------------------------------------- SHOW -----------------------------------------------------------*
 
 pred show[]{}
 run show for 10
