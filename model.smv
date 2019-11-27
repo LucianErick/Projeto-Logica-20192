@@ -1,0 +1,83 @@
+MODULE main
+
+VAR
+	encomendas: array 0..2 of 0..10; -- um array onde respectivamente cada posicao é a quantidade de encomenda pequena, media e grande.
+	
+	status_entrega : {entregue, aguardando};
+	status_pagamento : {pago, nao_pago};
+
+	tipo_entregador : {normal, especial};
+
+	tipo_cliente : {normal, prime};
+	
+	validade_encomenda : {valido, invalido};
+	
+	validade_entregador : {valido, invalido};
+
+
+ASSIGN
+	init(status_entrega) := aguardando;
+	init(status_pagamento) := nao_pago;
+
+	next(status_entrega) := case
+		status_pagamento = pago : entregue;
+		status_pagamento = nao_pago : aguardando;
+		
+		TRUE: status_entrega;
+
+	esac;
+
+	next(encomendas[0]):= case
+		tipo_cliente = normal & encomendas[0] < 10: encomendas[0]+1;
+		tipo_cliente = prime & encomendas[0] < 10: encomendas[0]+1;
+		TRUE: encomendas[0];
+	
+	esac;
+	
+	next(encomendas[1]):= case
+		tipo_cliente = normal & encomendas[1] < 10: encomendas[1]+1;
+		tipo_cliente = prime & encomendas[1] < 10: encomendas[1]+1;
+		
+		TRUE: encomendas[1];
+	
+	esac;
+
+	next(encomendas[2]):= case
+		tipo_cliente = normal & tipo_entregador = especial & encomendas[2] < 10: encomendas[2]+1;
+		tipo_cliente = prime & tipo_entregador = especial & encomendas[2] < 10: encomendas[2]+1;
+		
+		TRUE: encomendas[2];
+	
+	esac;
+
+	next(validade_encomenda):= case
+		((tipo_cliente = normal) & (encomendas[0] + encomendas[1] +  encomendas[2]) <= 3) : valido;
+		((tipo_cliente = normal) & (encomendas[0] + encomendas[1] +  encomendas[2]) > 3) : invalido;
+		((tipo_cliente = prime) & (encomendas[0] + encomendas[1] +  encomendas[2]) <= 6) : valido;
+		((tipo_cliente = prime) & (encomendas[0] + encomendas[1] +  encomendas[2]) > 6) : invalido;
+		
+		TRUE: validade_encomenda;
+		
+	esac;
+	
+	next(validade_entregador) := case
+		(tipo_entregador = normal) & (encomendas[2] > 0) : invalido;
+		(tipo_entregador = normal) & (encomendas[2] = 0) : valido;
+		tipo_entregador = especial : valido;
+		
+		TRUE: validade_entregador;
+	
+	esac;
+	
+	
+	
+SPEC AG((tipo_cliente = prime & (encomendas[0] + encomendas[1] +  encomendas[2]) > 6)) -> (validade_encomenda = invalido);
+SPEC AG((tipo_cliente = normal & (encomendas[0] + encomendas[1] +  encomendas[2]) > 3)) -> (validade_encomenda = invalido);
+SPEC AG((tipo_cliente = normal & (encomendas[0] + encomendas[1] +  encomendas[2]) <= 3)) -> (validade_encomenda = valido);
+SPEC AG((tipo_cliente = prime & (encomendas[0] + encomendas[1] +  encomendas[2]) <= 6)) -> (validade_encomenda = valido);
+SPEC AG((tipo_entregador = normal) & (encomendas[2] > 0)) -> (validade_entregador = invalido);
+SPEC AG((tipo_entregador = normal) & (encomendas[2] = 0)) -> (validade_entregador = valido);
+SPEC AG((tipo_entregador = especial) & (encomendas[2] >= 0)) -> (validade_entregador = valido);
+SPEC AG(status_pagamento = pago) -> (status_entrega = entregue);
+SPEC AG(status_pagamento = nao_pago) -> (status_entrega = aguardando);
+SPEC AG(status_entrega = entregue) -> (status_pagamento = pago);
