@@ -104,9 +104,9 @@ assert assertTodaEncomendaTemCliente {
 
 -------------------------------------- CHECK'S -------------------------------------------------------*
 
-check assertNumeroDeEncomendasClienteNormal for 10
-check assertNumeroDeEncomendasClientePrime for 10
-check assertTodaEncomendaTemCliente for 10  
+--check assertNumeroDeEncomendasClienteNormal for 10
+--check assertNumeroDeEncomendasClientePrime for 10
+--check assertTodaEncomendaTemCliente for 10  
 
 -------------------------------------- SHOW -----------------------------------------------------------*
 
