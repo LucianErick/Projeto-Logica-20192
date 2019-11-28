@@ -102,11 +102,16 @@ assert assertTodaEncomendaTemCliente {
 	 encomenda in encomendasDoCliente[cliente]
 }
 
+assert assertEncomendaAguardandoEntregaNaoTemPagamentoConfirmado{
+	all encomenda:Encomenda | (encomenda.statusEntrega = Aguardando) => (encomenda.statusPagamento = AguardandoPagamento)
+}
+
 -------------------------------------- CHECK'S -------------------------------------------------------*
 
 --check assertNumeroDeEncomendasClienteNormal for 10
 --check assertNumeroDeEncomendasClientePrime for 10
 --check assertTodaEncomendaTemCliente for 10  
+--check assertEncomendaAguardandoEntregaNaoTemPagamentoConfirmado for 10
 
 -------------------------------------- SHOW -----------------------------------------------------------*
 
